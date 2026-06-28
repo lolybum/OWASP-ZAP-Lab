@@ -69,3 +69,264 @@ Skills Demonstrated
 - GitHub Project Documentation
 
 
+OWASP ZAP Authenticated Web Application Security Assessment
+
+Executive Summary
+
+This project demonstrates a manual web application security assessment performed against the intentionally vulnerable OWASP Juice Shop application using OWASP ZAP 2.17.0. The objective was to configure ZAP as an intercepting proxy, capture authentication traffic, perform controlled login request fuzzing, and analyze server responses to identify authentication-related behaviors.
+
+The assessment focused on understanding how the application processes login requests rather than compromising user accounts. All testing was conducted in a controlled lab environment designed for security training.
+
+---
+
+Project Objectives
+
+- Configure OWASP ZAP as an intercepting proxy.
+- Configure Firefox to route traffic through ZAP.
+- Capture HTTP POST authentication requests.
+- Analyze login request parameters.
+- Perform controlled authentication fuzz testing using OWASP ZAP Fuzzer.
+- Evaluate server responses for authentication anomalies.
+- Document findings using industry-standard penetration testing methodology.
+
+---
+
+Lab Environment
+
+Component| Details
+Operating System| Kali Linux 2026.1
+Host OS| Windows 11
+Virtualization| Oracle VirtualBox
+Target Application| OWASP Juice Shop
+Assessment Tool| OWASP ZAP 2.17.0
+Browser| Mozilla Firefox
+Proxy Address| 127.0.0.1
+Proxy Port| 8080
+
+---
+
+Tools Used
+
+- OWASP ZAP
+- Mozilla Firefox
+- Kali Linux
+- Oracle VirtualBox
+- OWASP Juice Shop
+
+---
+
+Assessment Methodology
+
+Phase 1 – Environment Preparation
+
+- Started OWASP Juice Shop.
+- Verified application availability.
+- Configured Firefox to proxy all HTTP/HTTPS traffic through OWASP ZAP.
+- Confirmed successful proxy communication.
+
+---
+
+Phase 2 – Manual Exploration
+
+The application was manually explored to populate the ZAP Sites Tree.
+
+Activities included:
+
+- Browsing products
+- Opening application pages
+- Accessing the login interface
+- Capturing application requests
+
+---
+
+Phase 3 – Authentication Traffic Capture
+
+A login attempt was performed using:
+
+Email:
+
+admin@juice-sh.op
+
+Password:
+
+test
+
+OWASP ZAP successfully intercepted the authentication request.
+
+Captured endpoint:
+
+POST /rest/user/login
+
+Captured content type:
+
+application/json
+
+Example request body:
+
+{
+  "email":"admin@juice-sh.op",
+  "password":"test"
+}
+
+---
+
+Phase 4 – Authentication Fuzz Testing
+
+The captured login request was sent to the OWASP ZAP Fuzzer.
+
+The password parameter was selected as the fuzz location.
+
+Sample payloads used:
+
+- admin
+- password
+- 123456
+- admin123
+- welcome
+- juice-shop
+
+The objective was to observe application responses to different password inputs and identify behavioral differences.
+
+---
+
+Results
+
+Observed responses included:
+
+Most payloads:
+
+- HTTP 401 Unauthorized
+- Response body approximately 26 bytes
+
+One payload:
+
+- HTTP 200 OK
+- Response body approximately 799 bytes
+
+The differing response indicates a change in application behavior that warrants further manual analysis. A different HTTP response alone does not confirm successful authentication.
+
+---
+
+Vulnerability Assessment
+
+Authentication Endpoint Exposure
+
+Severity: Low (Lab Observation)
+
+Description
+
+The login endpoint accepts JSON-formatted credentials and returns different HTTP responses depending on the submitted credentials.
+
+Risk
+
+An attacker may attempt repeated authentication requests to identify behavioral differences if rate limiting or account lockout mechanisms are insufficient.
+
+Evidence
+
+- Captured POST request
+- Authentication endpoint
+- Fuzz testing results
+
+Recommendation
+
+- Implement account lockout after repeated failed logins.
+- Enforce rate limiting.
+- Use consistent error messages.
+- Monitor authentication events.
+- Enable multi-factor authentication.
+
+---
+
+Security Controls Observed
+
+- JSON authentication endpoint
+- HTTP status code validation
+- Unauthorized responses for invalid credentials
+- Structured API responses
+
+---
+
+MITRE ATT&CK Mapping
+
+Technique| ATT&CK ID
+Valid Accounts| T1078
+Password Guessing| T1110.001
+Application Layer Protocol| T1071
+
+---
+
+OWASP Testing Guide Mapping
+
+This assessment aligns with:
+
+- OTG-AUTHN-001 Authentication Testing
+- OTG-INFO-002 Fingerprinting
+- OTG-CONFIG-006 HTTP Methods Testing
+- OTG-AUTHZ Authorization Review
+
+---
+
+Screenshots
+
+Include screenshots of the following:
+
+- Lab Environment
+- Firefox Proxy Configuration
+- OWASP ZAP Configuration
+- Juice Shop Home Page
+- Captured POST Request
+- Authentication Request Body
+- Fuzzer Configuration
+- Payload Configuration
+- Fuzzer Results
+- Response Comparison
+
+---
+
+Key Findings
+
+- Successfully configured OWASP ZAP as an intercepting proxy.
+- Captured authentication POST requests.
+- Identified the JSON login endpoint.
+- Conducted controlled authentication fuzz testing.
+- Observed differing application responses for multiple payloads.
+- Documented authentication workflow for further security assessment.
+
+---
+
+Skills Demonstrated
+
+- Web Application Penetration Testing
+- OWASP ZAP
+- HTTP Request Analysis
+- Proxy Configuration
+- Authentication Testing
+- Login Request Fuzzing
+- Manual Web Security Assessment
+- API Analysis
+- Security Documentation
+- Vulnerability Reporting
+
+---
+
+Remediation Recommendations
+
+- Enforce account lockout policies.
+- Implement rate limiting.
+- Monitor failed authentication attempts.
+- Enable multi-factor authentication.
+- Use generic authentication error messages.
+- Log authentication events for detection.
+- Periodically review authentication controls.
+
+---
+
+Conclusion
+
+This assessment demonstrated the use of OWASP ZAP to perform a controlled manual security assessment of the OWASP Juice Shop application. The project included proxy configuration, HTTP request interception, authentication traffic analysis, and login request fuzz testing. The exercise reinforces practical skills in web application penetration testing while following ethical testing practices within a controlled lab environment.
+
+---
+
+Disclaimer
+
+This assessment was performed exclusively against the intentionally vulnerable OWASP Juice Shop application within a personal laboratory environment. All testing was authorized and conducted for educational and defensive cybersecurity purposes only. 
